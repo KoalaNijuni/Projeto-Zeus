@@ -7,4 +7,5 @@ router.get("/getAll", controller.getAll);
 router.get("/getByID/:id", controller.getByID);
 router.put("/editByID/:id", controller.edit);
 router.delete("/deleteID/:id", controller.delete);
+router.get("/sum", controller.sumOfPrice);
 module.exports = router;

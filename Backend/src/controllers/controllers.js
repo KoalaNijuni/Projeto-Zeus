@@ -19,7 +19,8 @@ module.exports = {
   },
   getByID: async (req, res) => {
     try {
-      const getID = await Entry.findById(req.params.id);
+      const { id } = req.params;
+      const getID = await Entry.findById(id);
       return res.status(200).send(getID);
     } catch (err) {
       return res.status(400).send({ error: err.message });
@@ -27,7 +28,8 @@ module.exports = {
   },
   edit: async (req, res) => {
     try {
-      const EditByID = await Entry.findByIdAndUpdate(req.params.id, req.body, {
+      const { id } = req.params;
+      const EditByID = await Entry.findByIdAndUpdate(id, req.body, {
         new: true,
       });
       return res.status(200).send(EditByID);
@@ -37,8 +39,22 @@ module.exports = {
   },
   delete: async (req, res) => {
     try {
-      const DeleteID = await Entry.findByIdAndDelete(req.params.id);
+      const { id } = req.params;
+      const DeleteID = await Entry.findByIdAndDelete(id);
       return res.status(200).send(DeleteID);
+    } catch (err) {
+      return res.status(400).send({ error: err.message });
+    }
+  },
+  sumOfPrice: async (req, res) => {
+    try {
+      let total = 0;
+      let dbItems = await Entry.find();
+      for (let i = 0; i < dbItems.length; i++) {
+        total += dbItems[i].price;
+      }
+      total = total.toFixed(2);
+      return res.status(200).send({ total });
     } catch (err) {
       return res.status(400).send({ error: err.message });
     }
