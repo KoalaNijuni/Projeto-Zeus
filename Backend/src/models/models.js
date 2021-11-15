@@ -14,11 +14,10 @@ const UserSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    // date: {
-    //   type: Date,
-    //   required: false,
-    //   default: Date.now,
-    // },
+    weight: {
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: true }
 );
