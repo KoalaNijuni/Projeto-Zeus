@@ -6,7 +6,7 @@ require("./database/db")();
 
 app.use(express.json());
 app.use(cors());
-const PORT = 3001;
+const PORT = 3002;
 
 app.all("*", require("./routes/routes"));
 

@@ -10,10 +10,6 @@ const UserSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    quantity: {
-      type: Number,
-      required: true,
-    },
     weight: {
       type: Number,
       required: true,
