@@ -15,7 +15,6 @@ function App() {
   const [purchase, setPurchase] = useState();
   const [show, setShow] = useState(false);
   const [entry, setEntry] = useState([]);
-  //const [isUpdate, setIsUpdate] = useState(false);
 
   const addPurchase = () => {
     Axios.post("http://localhost:3002/create", {
@@ -23,8 +22,8 @@ function App() {
       price: price,
       weight: weight,
     }).then(() => {
-      console.log("Purchase created");
       window.location.reload();
+      console.log(entry);
     });
   };
 
@@ -46,39 +45,51 @@ function App() {
 
   return (
     <div className="App">
-      <div className={show ? "pop-up visible" : "pop-up"}>
-        <input
-          placeholder="Nome"
-          type="text"
-          defaultValue={nameEdit}
-          onChange={(event) => {
-            setNameEdit(event.target.value);
-          }}
-        />
-        <input
-          placeholder="Preço"
-          type="number"
-          defaultValue={priceEdit}
-          onChange={(event) => {
-            setPriceEdit(event.target.value);
-          }}
-        />
-        <input
-          placeholder="Peso"
-          type="number"
-          defaultValue={weightEdit}
-          onChange={(event) => {
-            setWeightEdit(event.target.value);
-          }}
-        />
-        <button
-          onClick={() => {
-            setShow(false);
-            editPurchase(purchase._id);
-          }}
-        >
-          Editar
-        </button>
+      <div className={show ? "visible" : "invisible"}>
+        <div className="pop-up">
+          <label>Nome da ração</label>
+          <input
+            placeholder="Nome"
+            type="text"
+            value={nameEdit}
+            onChange={(event) => {
+              setNameEdit(event.target.value);
+            }}
+          />
+          <label>Preço da ração</label>
+          <input
+            placeholder="Preço"
+            type="number"
+            value={priceEdit}
+            onChange={(event) => {
+              setPriceEdit(event.target.value);
+            }}
+          />
+          <label>Peso da ração</label>
+          <input
+            placeholder="Peso"
+            type="number"
+            value={weightEdit}
+            onChange={(event) => {
+              setWeightEdit(event.target.value);
+            }}
+          />
+          <button
+            onClick={() => {
+              setShow(false);
+              editPurchase(purchase._id);
+            }}
+          >
+            Editar
+          </button>
+          <button
+            onClick={() => {
+              setShow(false);
+            }}
+          >
+            Cancelar
+          </button>
+        </div>
       </div>
       <h1 className="projectName">Projeto Zeus</h1>
       <div className="info">
@@ -129,13 +140,13 @@ function App() {
           <tbody>
             {entry.map((purchase) => (
               <tr>
-                <th>{purchase.name}</th>
-                <th>R${purchase.price}</th>
-                <th>{purchase.weight}kg</th>
-                <th>
+                <td>{purchase.name}</td>
+                <td>R${purchase.price}</td>
+                <td>{purchase.weight}kg</td>
+                <td>
                   {format(Date.parse(purchase.createdAt), "dd/MM/yyyy HH:mm")}
-                </th>
-                <th>
+                </td>
+                <td>
                   <button
                     onClick={() => {
                       setPurchase(purchase);
@@ -143,6 +154,7 @@ function App() {
                       setPriceEdit(purchase.price);
                       setWeightEdit(purchase.weight);
                       setShow(true);
+                      console.log(priceEdit, weightEdit);
                     }}
                   >
                     Edit
@@ -157,7 +169,7 @@ function App() {
                   >
                     Delete
                   </button>
-                </th>
+                </td>
               </tr>
             ))}
           </tbody>
