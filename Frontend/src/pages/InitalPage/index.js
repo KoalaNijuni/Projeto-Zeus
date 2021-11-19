@@ -2,6 +2,7 @@ import "./style.css";
 import { useEffect, useState } from "react";
 import Axios from "axios";
 import { format } from "date-fns";
+import PurchaseCamp from "../../components/PurchaseCamp/index";
 
 //import CurrencyInput from "./components/CurrencyInput";
 
@@ -40,7 +41,6 @@ function InitialPage() {
   useEffect(() => {
     Axios.get("http://localhost:3002/getAll").then((response) => {
       setEntry(response.data);
-      console.log(response.data);
     });
   }, []);
 
@@ -167,6 +167,11 @@ function InitialPage() {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="list">
+        {entry.map((purchase) => (
+          <PurchaseCamp props={purchase} />
+        ))}
       </div>
     </div>
   );

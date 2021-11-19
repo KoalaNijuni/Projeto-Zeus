@@ -1,20 +1,35 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button } from "react-native";
-import Axios from "axios";
-
+import api from "../../services/api";
 export default function Form() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [weight, setWeight] = useState(0);
 
+  const getAll = () => {
+    api
+      .get("/getAll")
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const addPurchase = () => {
-    Axios.post("https://localhost:3002/create", {
-      name: name,
-      price: price,
-      weight: weight,
-    }).then(() => {
-      console.log("yayyy");
-    });
+    api
+      .post("/create", {
+        name: name,
+        price: price,
+        weight: weight,
+      })
+      .then(() => {
+        console.log("Compra feita");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   return (
     <View>
@@ -40,7 +55,7 @@ export default function Form() {
             setWeight(event);
           }}
         />
-        <Button title="Submit" onPress={addPurchase} />
+        <Button title="Submit" onPress={getAll} />
       </View>
     </View>
   );
