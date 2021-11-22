@@ -6,17 +6,6 @@ export default function Form() {
   const [price, setPrice] = useState(0);
   const [weight, setWeight] = useState(0);
 
-  const getAll = () => {
-    api
-      .get("/getAll")
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   const addPurchase = () => {
     api
       .post("/create", {
@@ -55,7 +44,7 @@ export default function Form() {
             setWeight(event);
           }}
         />
-        <Button title="Submit" onPress={getAll} />
+        <Button title="Submit" onPress={addPurchase} />
       </View>
     </View>
   );

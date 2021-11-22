@@ -60,4 +60,17 @@ module.exports = {
       return res.status(400).send({ error: err.message });
     }
   },
+  sumOfWeight: async (req, res) => {
+    try {
+      let total = 0;
+      let dbItems = await Entry.find();
+      for (let i = 0; i < dbItems.length; i++) {
+        total += dbItems[i].weight;
+      }
+      total = total.toFixed(2);
+      return res.status(200).send({ total });
+    } catch (err) {
+      return res.status(400).send({ error: err.message });
+    }
+  },
 };
