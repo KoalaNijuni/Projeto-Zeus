@@ -16,6 +16,8 @@ function InitialPage() {
   const [purchase, setPurchase] = useState();
   const [show, setShow] = useState(false);
   const [entry, setEntry] = useState([]);
+  const [priceSum, setPriceSum] = useState(0);
+  const [weightSum, setWeightSum] = useState(0);
 
   const addPurchase = () => {
     Axios.post("http://localhost:3002/create", {
@@ -41,6 +43,12 @@ function InitialPage() {
   useEffect(() => {
     Axios.get("http://localhost:3002/getAll").then((response) => {
       setEntry(response.data);
+    });
+    Axios.get("http://localhost:3002/sum").then((response) => {
+      setPriceSum(response.data.total);
+    });
+    Axios.get("http://localhost:3002/weightSum").then((response) => {
+      setWeightSum(response.data.total);
     });
   }, []);
 
@@ -92,7 +100,19 @@ function InitialPage() {
           </button>
         </div>
       </div>
-      <h1 className="projectName">Projeto Zeus</h1>
+      <div className="header">
+        <h1>Zeus Pet Expenses</h1>
+        <div className="info-boxes">
+          <div className="caixa">
+            <h2>Gastos totais:</h2>
+            <p>R${priceSum}</p>
+          </div>
+          <div className="caixa">
+            <h2>Total de ração:</h2>
+            <p>{weightSum}kg</p>
+          </div>
+        </div>
+      </div>
       <div className="info">
         <label>Qual ração você comprou?</label>
         <input
