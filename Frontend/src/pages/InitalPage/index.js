@@ -1,5 +1,5 @@
 import "./style.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Axios from "axios";
 import { format } from "date-fns";
 import PurchaseCamp from "../../components/PurchaseCamp/index";
@@ -18,15 +18,17 @@ function InitialPage() {
   const [entry, setEntry] = useState([]);
   const [priceSum, setPriceSum] = useState(0);
   const [weightSum, setWeightSum] = useState(0);
+  const formRef = useRef(null);
 
-  const addPurchase = () => {
+  const addPurchase = (e) => {
+    e.preventDefault();
     Axios.post("http://localhost:3002/create", {
       name: name,
       price: price,
       weight: weight,
     }).then(() => {
-      window.location.reload();
-      console.log(entry);
+      getList();
+      formRef.current.reset();
     });
   };
 
@@ -36,7 +38,7 @@ function InitialPage() {
       price: priceEdit,
       weight: weightEdit,
     }).then(() => {
-      window.location.reload();
+      getList();
     });
   };
 
@@ -51,6 +53,18 @@ function InitialPage() {
       setWeightSum(response.data.total);
     });
   }, []);
+
+  const getList = () => {
+    Axios.get("http://localhost:3002/getAll").then((response) => {
+      setEntry(response.data);
+    });
+    Axios.get("http://localhost:3002/sum").then((response) => {
+      setPriceSum(response.data.total);
+    });
+    Axios.get("http://localhost:3002/weightSum").then((response) => {
+      setWeightSum(response.data.total);
+    });
+  };
 
   return (
     <div className="App">
@@ -113,7 +127,7 @@ function InitialPage() {
           </div>
         </div>
       </div>
-      <div className="info">
+      <form className="info" ref={formRef}>
         <label>Qual ração você comprou?</label>
         <input
           required="required"
@@ -139,7 +153,7 @@ function InitialPage() {
           }}
         />
         <button onClick={addPurchase}>Submit</button>
-      </div>
+      </form>
       <div className="app-container">
         <table>
           <thead>
@@ -176,8 +190,9 @@ function InitialPage() {
                     onClick={() => {
                       Axios.delete(
                         `http://localhost:3002/deleteID/${purchase._id}`
-                      );
-                      window.location.reload();
+                      ).then(() => {
+                        getList();
+                      });
                     }}
                   >
                     Delete
