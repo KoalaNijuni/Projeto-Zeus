@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import api from "../../services/api";
 import {
   StyleSheet,
@@ -13,7 +13,61 @@ import {
 
 export default function Main() {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isEditVisible, setIsEditVisible] = useState(true);
+  const [isEditVisible, setIsEditVisible] = useState(false);
+
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState(0);
+  const [weight, setWeight] = useState("");
+
+  const [db, setDb] = useState([]);
+  const [priceSum, setPriceSum] = useState(0);
+  const [weightSum, setWeightSum] = useState(0);
+
+  const addPurchase = () => {
+    api
+      .post("/create", {
+        name: name,
+        price: price,
+        weight: weight,
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    api
+      .get("/getAll")
+      .then((res) => {
+        setDb(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    api
+      .get("/sum")
+      .then((res) => {
+        setPriceSum(res.data.total);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    api
+      .get("/weightSum")
+      .then((res) => {
+        setWeightSum(res.data.total);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  useEffect(() => {
+    console.log(db);
+  }, [db]);
 
   return (
     <ImageBackground
@@ -33,15 +87,38 @@ export default function Main() {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text>Qual ração você comprou?</Text>
-              <TextInput placeholder="Ração" style={styles.Input}></TextInput>
+              <TextInput
+                placeholder="Ração"
+                onChangeText={(value) => {
+                  setName(value);
+                }}
+                style={styles.Input}
+              ></TextInput>
               <Text>Quantos quilos?</Text>
-              <TextInput placeholder="Preço" style={styles.Input}></TextInput>
+              <TextInput
+                placeholder="Preço"
+                onChangeText={(value) => {
+                  setWeight(value);
+                }}
+                keyboardType="numeric"
+                style={styles.Input}
+              ></TextInput>
               <Text>Quanto custou?</Text>
-              <TextInput placeholder="Valor" style={styles.Input}></TextInput>
+              <TextInput
+                placeholder="Valor"
+                onChangeText={(value) => {
+                  setPrice(value);
+                }}
+                keyboardType="numeric"
+                style={styles.Input}
+              ></TextInput>
               <View style={styles.ModalButtons}>
                 <TouchableOpacity
                   style={[styles.button]}
-                  onPress={() => setIsModalVisible(!isModalVisible)}
+                  onPress={() => {
+                    addPurchase();
+                    setIsModalVisible(!isModalVisible);
+                  }}
                 >
                   <Text style={styles.textStyle}>Adicionar</Text>
                 </TouchableOpacity>
@@ -94,11 +171,11 @@ export default function Main() {
         <View style={styles.info}>
           <View style={styles.sumBox}>
             <Text style={styles.infoLabel}>Total de gastos:</Text>
-            <Text style={styles.priceText}>R$20,00</Text>
+            <Text style={styles.priceText}>R${priceSum}</Text>
           </View>
           <View style={styles.sumBox}>
             <Text style={styles.infoLabel}>Total de ração:</Text>
-            <Text style={styles.sumText}>1000kg</Text>
+            <Text style={styles.sumText}>{weightSum}kg</Text>
           </View>
         </View>
         <TouchableOpacity
@@ -112,7 +189,10 @@ export default function Main() {
         </TouchableOpacity>
         <View style={styles.table}>
           <View>
-            <Text></Text>
+            <Text>Ração</Text>
+            <Text>Preço</Text>
+            <Text>Peso</Text>
+            <Text>Data</Text>
           </View>
           <View>
             <Text></Text>
@@ -257,4 +337,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#FAE8E0",
     borderRadius: 250,
   },
+  purchase: {},
 });
