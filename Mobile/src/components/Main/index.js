@@ -1,19 +1,27 @@
 import React, { useState, useEffect } from "react";
 import api from "../../services/api";
+import styles from "./style";
+import { format } from "date-fns";
+// import Popup from "../Modal/index";
+// import PopupEdit from "../ModalEdit/index";
 import {
-  StyleSheet,
   View,
   Text,
-  Dimensions,
   TouchableOpacity,
   Modal,
   TextInput,
   ImageBackground,
+  ScrollView,
 } from "react-native";
 
 export default function Main() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEditVisible, setIsEditVisible] = useState(false);
+
+  const [nameEdit, setNameEdit] = useState("");
+  const [priceEdit, setPriceEdit] = useState(0);
+  const [weightEdit, setWeightEdit] = useState(0);
+  const [idEdit, setIdEdit] = useState("");
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
@@ -31,7 +39,22 @@ export default function Main() {
         weight: weight,
       })
       .then((res) => {
-        console.log(res.data);
+        getList();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const editPurchase = (id) => {
+    api
+      .put(`/editByID/${id}`, {
+        name: nameEdit,
+        price: priceEdit,
+        weight: weightEdit,
+      })
+      .then(() => {
+        getList();
       })
       .catch((err) => {
         console.log(err);
@@ -65,9 +88,32 @@ export default function Main() {
       });
   }, []);
 
-  useEffect(() => {
-    console.log(db);
-  }, [db]);
+  const getList = () => {
+    api
+      .get("/getAll")
+      .then((res) => {
+        setDb(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    api
+      .get("/sum")
+      .then((res) => {
+        setPriceSum(res.data.total);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    api
+      .get("/weightSum")
+      .then((res) => {
+        setWeightSum(res.data.total);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <ImageBackground
@@ -75,7 +121,7 @@ export default function Main() {
       resizeMode="cover"
       style={styles.image}
     >
-      <View style={styles.mainPage}>
+      <ScrollView>
         <Modal
           animationType="slide"
           transparent={true}
@@ -97,10 +143,10 @@ export default function Main() {
               <Text>Quantos quilos?</Text>
               <TextInput
                 placeholder="Preço"
+                keyboardType="numeric"
                 onChangeText={(value) => {
                   setWeight(value);
                 }}
-                keyboardType="numeric"
                 style={styles.Input}
               ></TextInput>
               <Text>Quanto custou?</Text>
@@ -143,199 +189,139 @@ export default function Main() {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text>Ração</Text>
-              <TextInput placeholder="Ração" style={styles.Input}></TextInput>
+              <TextInput
+                placeholder="Ração"
+                defaultValue={nameEdit}
+                style={styles.Input}
+                onChangeText={(value) => {
+                  setNameEdit(value);
+                }}
+              ></TextInput>
               <Text>Peso</Text>
-              <TextInput placeholder="Peso" style={styles.Input}></TextInput>
+              <TextInput
+                placeholder="Peso"
+                defaultValue={`${weightEdit}`}
+                style={styles.Input}
+                onChangeText={(value) => {
+                  setWeightEdit(value);
+                }}
+              ></TextInput>
               <Text>Preço</Text>
-              <TextInput placeholder="Valor" style={styles.Input}></TextInput>
+              <TextInput
+                placeholder="Valor"
+                defaultValue={`${priceEdit}`}
+                style={styles.Input}
+                onChangeText={(value) => {
+                  setPriceEdit(value);
+                }}
+              ></TextInput>
               <View style={styles.ModalButtons}>
                 <TouchableOpacity
-                  style={[styles.button]}
-                  onPress={() => setIsEditVisible(!isEditVisible)}
+                  style={styles.button}
+                  onPress={() => {
+                    editPurchase(idEdit);
+                    setIsEditVisible(!isEditVisible);
+                  }}
                 >
                   <Text style={styles.textStyle}>Editar</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={[styles.button]}
+                  style={styles.button}
                   onPress={() => setIsEditVisible(!isEditVisible)}
                 >
                   <Text style={styles.textStyle}>Cancelar</Text>
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                style={styles.delete}
+                onPress={() => {
+                  api
+                    .delete(`/deleteID/${idEdit}`)
+                    .then(() => {
+                      getList();
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                    });
+                  setIsEditVisible(!isEditVisible);
+                }}
+              >
+                <Text style={styles.textStyle}>Deletar</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </Modal>
-        <View style={styles.header}>
-          <Text style={styles.name}>Zeus Pet Expenses</Text>
+        <View style={styles.mainPage}>
+          <View style={styles.header}>
+            <Text style={styles.name}>Zeus Pet Expenses</Text>
+          </View>
+          <View style={styles.info}>
+            <View style={styles.sumBox}>
+              <Text style={styles.infoLabel}>Total de gastos:</Text>
+              <Text style={styles.priceText}>R${priceSum}</Text>
+            </View>
+            <View style={styles.sumBox}>
+              <Text style={styles.infoLabel}>Total de ração:</Text>
+              <Text style={styles.sumText}>{weightSum}kg</Text>
+            </View>
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              setIsModalVisible(true);
+            }}
+          >
+            <View style={styles.botao}>
+              <Text style={styles.textoBotao}>ADICIONAR COMPRA</Text>
+            </View>
+          </TouchableOpacity>
+          <View style={styles.table}>
+            <View style={styles.row}>
+              <View style={({ backgroundColor: "white" }, styles.rowBox)}>
+                <Text style={{ fontWeight: "bold", fontSize: 18 }}>Ração</Text>
+              </View>
+              <View style={styles.rowBox}>
+                <Text style={{ fontWeight: "bold", fontSize: 18 }}>Preço</Text>
+              </View>
+              <View style={styles.rowBox}>
+                <Text style={{ fontWeight: "bold", fontSize: 18 }}>Peso</Text>
+              </View>
+              <View style={styles.rowBox}>
+                <Text style={{ fontWeight: "bold", fontSize: 18 }}>Data</Text>
+              </View>
+            </View>
+            {db.map((purchase) => {
+              return (
+                <TouchableOpacity
+                  key={purchase._id}
+                  style={styles.row}
+                  onPress={() => {
+                    setIsEditVisible(true);
+                    setIdEdit(purchase._id);
+                    setNameEdit(purchase.name);
+                    setPriceEdit(purchase.price);
+                    setWeightEdit(purchase.weight);
+                  }}
+                >
+                  <View style={styles.rowBox}>
+                    <Text>{purchase.name}</Text>
+                  </View>
+                  <View style={styles.rowBox}>
+                    <Text>R${purchase.price}</Text>
+                  </View>
+                  <View style={styles.rowBox}>
+                    <Text>{purchase.weight}kg</Text>
+                  </View>
+                  <View style={styles.rowBox}>
+                    <Text>
+                      {format(Date.parse(purchase.createdAt), "dd/MM/yyyy")}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
         </View>
-        <View style={styles.info}>
-          <View style={styles.sumBox}>
-            <Text style={styles.infoLabel}>Total de gastos:</Text>
-            <Text style={styles.priceText}>R${priceSum}</Text>
-          </View>
-          <View style={styles.sumBox}>
-            <Text style={styles.infoLabel}>Total de ração:</Text>
-            <Text style={styles.sumText}>{weightSum}kg</Text>
-          </View>
-        </View>
-        <TouchableOpacity
-          onPress={() => {
-            setIsModalVisible(true);
-          }}
-        >
-          <View style={styles.botao}>
-            <Text style={styles.textoBotao}>ADICIONAR COMPRA</Text>
-          </View>
-        </TouchableOpacity>
-        <View style={styles.table}>
-          <View>
-            <Text>Ração</Text>
-            <Text>Preço</Text>
-            <Text>Peso</Text>
-            <Text>Data</Text>
-          </View>
-          <View>
-            <Text></Text>
-          </View>
-          <View>
-            <Text></Text>
-          </View>
-          <View>
-            <Text></Text>
-          </View>
-        </View>
-      </View>
+      </ScrollView>
     </ImageBackground>
   );
 }
-
-const { width } = Dimensions.get("screen");
-
-const styles = StyleSheet.create({
-  image: {
-    flex: 1,
-  },
-  header: {
-    backgroundColor: "#EF7C8E",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    alignItems: "center",
-    justifyContent: "center",
-    width: width,
-    height: 120,
-    paddingTop: 20,
-  },
-  name: {
-    fontSize: 35,
-    color: "white",
-  },
-  info: {
-    alignItems: "center",
-    width: width,
-    display: "flex",
-    flexDirection: "column",
-  },
-  sumBox: {
-    height: 220,
-    width: width * 0.8,
-    borderRadius: 60,
-    backgroundColor: "#FAE8E0",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 1,
-    shadowRadius: 4,
-    elevation: 5,
-    alignItems: "center",
-    marginVertical: 20,
-  },
-  priceText: {
-    color: "#94C973",
-    fontSize: 30,
-    marginTop: 40,
-  },
-  sumText: {
-    fontSize: 30,
-    marginTop: 40,
-    color: "#4F4347",
-  },
-  infoLabel: {
-    fontSize: 30,
-    marginTop: 10,
-    color: "#4F4347",
-  },
-  botao: {
-    width: width * 0.8,
-    height: 50,
-    borderRadius: 20,
-    marginVertical: 20,
-    backgroundColor: "#B6E2D3",
-    alignSelf: "center",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  textoBotao: {
-    fontSize: 17,
-    color: "white",
-  },
-  table: {},
-
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    marginHorizontal: 15,
-    elevation: 2,
-    backgroundColor: "#8FDDE7",
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
-  },
-  ModalButtons: {
-    flexDirection: "row",
-  },
-  Input: {
-    textAlign: "center",
-    width: 250,
-    marginVertical: 10,
-    padding: 5,
-    height: 50,
-    backgroundColor: "#FAE8E0",
-    borderRadius: 250,
-  },
-  purchase: {},
-});

@@ -1,2 +1,176 @@
-import React from "react";
 import { StyleSheet, Dimensions } from "react-native";
+
+const { width } = Dimensions.get("screen");
+
+const styles = StyleSheet.create({
+  image: {
+    flex: 1,
+  },
+  header: {
+    backgroundColor: "#EF7C8E",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    width: width,
+    height: 120,
+    paddingTop: 20,
+  },
+  name: {
+    fontSize: 35,
+    color: "white",
+  },
+  info: {
+    alignItems: "center",
+    width: width,
+    display: "flex",
+    flexDirection: "column",
+  },
+  sumBox: {
+    height: 220,
+    width: width * 0.8,
+    borderRadius: 60,
+    backgroundColor: "#FAE8E0",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 4,
+    elevation: 5,
+    alignItems: "center",
+    marginVertical: 20,
+  },
+  priceText: {
+    color: "#94C973",
+    fontSize: 30,
+    marginTop: 40,
+  },
+  sumText: {
+    fontSize: 30,
+    marginTop: 40,
+    color: "#4F4347",
+  },
+  infoLabel: {
+    fontSize: 30,
+    marginTop: 10,
+    color: "#4F4347",
+  },
+  botao: {
+    width: width * 0.8,
+    height: 50,
+    borderRadius: 20,
+    marginVertical: 20,
+    backgroundColor: "#B6E2D3",
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  textoBotao: {
+    fontSize: 17,
+    color: "white",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    width: 100,
+    padding: 10,
+    marginHorizontal: 15,
+    elevation: 2,
+    backgroundColor: "#8FDDE7",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  ModalButtons: {
+    flexDirection: "row",
+  },
+  Input: {
+    textAlign: "center",
+    width: 250,
+    marginVertical: 10,
+    padding: 5,
+    height: 50,
+    backgroundColor: "#FAE8E0",
+    borderRadius: 250,
+  },
+  table: {
+    backgroundColor: "#FAE8E0",
+    marginHorizontal: 15,
+    borderWidth: 1,
+    borderRadius: 20,
+    padding: 5,
+    marginBottom: 20,
+    borderColor: "grey",
+  },
+  row: {
+    marginVertical: 15,
+    flex: 1,
+    alignSelf: "stretch",
+    flexDirection: "row",
+  },
+  dataBox: {
+    flex: 2,
+    padding: 0,
+    margin: 0,
+    alignSelf: "stretch",
+    borderRightWidth: 0,
+    borderColor: "grey",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  rowBox: {
+    padding: 0,
+    margin: 0,
+    flex: 1,
+    alignSelf: "stretch",
+    borderRightWidth: 0,
+    borderColor: "grey",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  delete: {
+    borderRadius: 20,
+    width: 100,
+    marginTop: 15,
+    padding: 10,
+    marginHorizontal: 15,
+    elevation: 2,
+    backgroundColor: "red",
+  },
+});
+
+export default styles;

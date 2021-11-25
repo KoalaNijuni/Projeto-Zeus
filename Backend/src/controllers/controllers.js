@@ -2,7 +2,6 @@ const Entry = require("../models/models");
 
 module.exports = {
   create: async (req, res) => {
-    console.log("aaaaa");
     req.body.price = parseFloat(req.body.price).toFixed(2);
     try {
       const createEntry = await Entry.create(req.body);
