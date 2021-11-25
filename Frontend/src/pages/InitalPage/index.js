@@ -116,18 +116,19 @@ function InitialPage() {
       </div>
       <div className="header">
         <h1>Zeus Pet Expenses</h1>
-        <div className="info-boxes">
-          <div className="caixa">
-            <h2>Gastos totais:</h2>
-            <p>R${priceSum}</p>
-          </div>
-          <div className="caixa">
-            <h2>Total de ração:</h2>
-            <p>{weightSum}kg</p>
-          </div>
+      </div>
+      <div className="info-boxes">
+        <div className="caixa">
+          <h2>Gastos totais:</h2>
+          <p>R${priceSum}</p>
+        </div>
+        <div className="caixa">
+          <h2>Total de ração:</h2>
+          <p>{weightSum}kg</p>
         </div>
       </div>
-      <form className="info" ref={formRef}>
+      <div className="table"></div>
+      {/* <form className="info" ref={formRef}>
         <label>Qual ração você comprou?</label>
         <input
           required="required"
@@ -167,7 +168,7 @@ function InitialPage() {
           </thead>
           <tbody>
             {entry.map((purchase) => (
-              <tr>
+              <tr key={purchase._id}>
                 <td>{purchase.name}</td>
                 <td>R${purchase.price}</td>
                 <td>{purchase.weight}kg</td>
@@ -207,7 +208,7 @@ function InitialPage() {
         {entry.map((purchase) => (
           <PurchaseCamp props={purchase} />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }
