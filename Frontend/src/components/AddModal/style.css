@@ -1,4 +1,4 @@
-.modal {
+.visible {
   background-color: rgba(0, 0, 0, 0.7);
   width: 100vw;
   height: 100vh;
@@ -8,11 +8,15 @@
   display: flex;
 }
 
-.container {
+.invisible {
+  display: none;
+}
+
+.pop-up {
   background-color: white;
   border: 3px solid black;
-  width: 40%;
-  height: 30%;
+  width: 300px;
+  height: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -20,13 +24,13 @@
   padding: 20px;
 }
 
-.container input {
+.pop-up input {
   width: 100%;
   height: 10%;
   margin: 10px;
   font-size: 20px;
 }
 
-.container button {
+.pop-up button {
   margin: 10px;
 }

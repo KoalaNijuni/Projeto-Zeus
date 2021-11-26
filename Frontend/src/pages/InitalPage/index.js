@@ -1,134 +1,89 @@
 import "./style.css";
-import { useEffect, useState, useRef } from "react";
-import Axios from "axios";
-import { format } from "date-fns";
-import PurchaseCamp from "../../components/PurchaseCamp/index";
+import { useEffect, useState } from "react";
+import api from "../../services/api";
+// import { format } from "date-fns";
 
-//import CurrencyInput from "./components/CurrencyInput";
+import AddModal from "../../components/AddModal/index";
+import EditModal from "../../components/EditModal/index";
+import Table from "../../components/Table/index";
 
 function InitialPage() {
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState(0);
-  const [weight, setWeight] = useState(0);
-  const [nameEdit, setNameEdit] = useState("");
-  const [priceEdit, setPriceEdit] = useState(0);
-  const [weightEdit, setWeightEdit] = useState(0);
-  const [purchase, setPurchase] = useState();
-  const [show, setShow] = useState(false);
+  const [purchase, setPurchase] = useState({});
+
+  const [showEdit, setShowEdit] = useState(false);
+  const [showAdd, setShowAdd] = useState(false);
+
   const [entry, setEntry] = useState([]);
+
   const [priceSum, setPriceSum] = useState(0);
   const [weightSum, setWeightSum] = useState(0);
-  const formRef = useRef(null);
-
-  const addPurchase = (e) => {
-    e.preventDefault();
-    Axios.post("http://localhost:3002/create", {
-      name: name,
-      price: price,
-      weight: weight,
-    }).then(() => {
-      getList();
-      formRef.current.reset();
-    });
-  };
-
-  const editPurchase = (id) => {
-    Axios.put(`http://localhost:3002/editByID/${id}`, {
-      name: nameEdit,
-      price: priceEdit,
-      weight: weightEdit,
-    }).then(() => {
-      getList();
-    });
-  };
 
   useEffect(() => {
-    Axios.get("http://localhost:3002/getAll").then((response) => {
+    api.get("/getAll").then((response) => {
       setEntry(response.data);
     });
-    Axios.get("http://localhost:3002/sum").then((response) => {
+    api.get("/sum").then((response) => {
       setPriceSum(response.data.total);
     });
-    Axios.get("http://localhost:3002/weightSum").then((response) => {
+    api.get("/weightSum").then((response) => {
       setWeightSum(response.data.total);
     });
   }, []);
 
   const getList = () => {
-    Axios.get("http://localhost:3002/getAll").then((response) => {
+    api.get("/getAll").then((response) => {
       setEntry(response.data);
     });
-    Axios.get("http://localhost:3002/sum").then((response) => {
+    api.get("/sum").then((response) => {
       setPriceSum(response.data.total);
     });
-    Axios.get("http://localhost:3002/weightSum").then((response) => {
+    api.get("/weightSum").then((response) => {
       setWeightSum(response.data.total);
     });
   };
 
   return (
     <div className="App">
-      <div className={show ? "visible" : "invisible"}>
-        <div className="pop-up">
-          <label>Nome da ração</label>
-          <input
-            placeholder="Nome"
-            type="text"
-            value={nameEdit}
-            onChange={(event) => {
-              setNameEdit(event.target.value);
-            }}
-          />
-          <label>Preço da ração</label>
-          <input
-            placeholder="Preço"
-            type="number"
-            value={priceEdit}
-            onChange={(event) => {
-              setPriceEdit(event.target.value);
-            }}
-          />
-          <label>Peso da ração</label>
-          <input
-            placeholder="Peso"
-            type="number"
-            value={weightEdit}
-            onChange={(event) => {
-              setWeightEdit(event.target.value);
-            }}
-          />
-          <button
-            onClick={() => {
-              setShow(false);
-              editPurchase(purchase._id);
-            }}
-          >
-            Editar
-          </button>
-          <button
-            onClick={() => {
-              setShow(false);
-            }}
-          >
-            Cancelar
-          </button>
-        </div>
-      </div>
+      <EditModal
+        showEdit={showEdit}
+        setShowEdit={setShowEdit}
+        getList={getList}
+        purchase={purchase}
+      />
+      <AddModal showAdd={showAdd} setShowAdd={setShowAdd} getList={getList} />
+
       <div className="header">
         <h1>Zeus Pet Expenses</h1>
       </div>
+
       <div className="info-boxes">
-        <div className="caixa">
+        <div className="box">
           <h2>Gastos totais:</h2>
           <p>R${priceSum}</p>
         </div>
-        <div className="caixa">
+        <div className="box">
           <h2>Total de ração:</h2>
           <p>{weightSum}kg</p>
         </div>
       </div>
-      <div className="table"></div>
-      {/* <form className="info" ref={formRef}>
+
+      <button
+        className="add-button"
+        onClick={() => {
+          setShowAdd(true);
+        }}
+      >
+        Adicionar compra
+      </button>
+
+      <Table
+        entry={entry}
+        getList={getList}
+        setShowEdit={setShowEdit}
+        setPurchase={setPurchase}
+      />
+
+      {/* <form className="form" ref={formRef}>
         <label>Qual ração você comprou?</label>
         <input
           required="required"
@@ -145,7 +100,7 @@ function InitialPage() {
             setPrice(event.target.value);
           }}
         />
-        <label>Quantos quilos?</label>
+        <label>Quant  os quilos?</label>
         <input
           required="required"
           type="number"
@@ -155,60 +110,7 @@ function InitialPage() {
         />
         <button onClick={addPurchase}>Submit</button>
       </form>
-      <div className="app-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Ração</th>
-              <th>Preço</th>
-              <th>Peso</th>
-              <th>Data</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {entry.map((purchase) => (
-              <tr key={purchase._id}>
-                <td>{purchase.name}</td>
-                <td>R${purchase.price}</td>
-                <td>{purchase.weight}kg</td>
-                <td>
-                  {format(Date.parse(purchase.createdAt), "dd/MM/yyyy HH:mm")}
-                </td>
-                <td>
-                  <button
-                    onClick={() => {
-                      setPurchase(purchase);
-                      setNameEdit(purchase.name);
-                      setPriceEdit(purchase.price);
-                      setWeightEdit(purchase.weight);
-                      setShow(true);
-                    }}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => {
-                      Axios.delete(
-                        `http://localhost:3002/deleteID/${purchase._id}`
-                      ).then(() => {
-                        getList();
-                      });
-                    }}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="list">
-        {entry.map((purchase) => (
-          <PurchaseCamp props={purchase} />
-        ))}
-      </div> */}
+      */}
     </div>
   );
 }
