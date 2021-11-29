@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   name: {
-    fontSize: 35,
+    fontSize: 45,
     color: "white",
   },
   info: {
@@ -49,19 +49,19 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   priceText: {
-    color: "#94C973",
     fontSize: 30,
     marginTop: 40,
+    color: "#000",
   },
   sumText: {
     fontSize: 30,
     marginTop: 40,
-    color: "#4F4347",
+    color: "#000",
   },
   infoLabel: {
     fontSize: 30,
     marginTop: 10,
-    color: "#4F4347",
+    color: "#000",
   },
   botao: {
     width: width * 0.8,

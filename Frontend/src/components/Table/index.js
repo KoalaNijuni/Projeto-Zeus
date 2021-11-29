@@ -1,6 +1,7 @@
 import React from "react";
 import { format } from "date-fns";
 import api from "../../services/api";
+import "./style.css";
 
 // import { Container } from './styles';
 

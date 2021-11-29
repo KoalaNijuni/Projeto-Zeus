@@ -4,6 +4,9 @@ import styles from "./style";
 import { format } from "date-fns";
 // import Popup from "../Modal/index";
 // import PopupEdit from "../ModalEdit/index";
+
+import { useFonts } from "expo-font";
+
 import {
   View,
   Text,
@@ -65,7 +68,7 @@ export default function Main() {
     api
       .get("/getAll")
       .then((res) => {
-        setDb(res.data);
+        setDb(res.data.reverse());
       })
       .catch((err) => {
         console.log(err);
@@ -86,13 +89,13 @@ export default function Main() {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [db]);
 
   const getList = () => {
     api
       .get("/getAll")
       .then((res) => {
-        setDb(res.data);
+        setDb(res.data.reverse());
       })
       .catch((err) => {
         console.log(err);
@@ -114,6 +117,14 @@ export default function Main() {
         console.log(err);
       });
   };
+
+  const [loaded] = useFonts({
+    DancingScript_Regular: require("../../assets/fonts/DancingScript-SemiBold.ttf"),
+  });
+
+  if (!loaded) {
+    return null;
+  }
 
   return (
     <ImageBackground
@@ -253,7 +264,11 @@ export default function Main() {
         </Modal>
         <View style={styles.mainPage}>
           <View style={styles.header}>
-            <Text style={styles.name}>Zeus Pet Expenses</Text>
+            <Text
+              style={{ ...styles.name, fontFamily: "DancingScript_Regular" }}
+            >
+              Zeus Pet Expenses
+            </Text>
           </View>
           <View style={styles.info}>
             <View style={styles.sumBox}>
