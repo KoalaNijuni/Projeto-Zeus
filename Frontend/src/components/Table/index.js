@@ -4,8 +4,6 @@ import { format } from "date-fns";
 import api from "../../services/api";
 import EditModal from "../EditModal/index";
 
-// import { Container } from './styles';
-
 function Table({ entry = [], getList }) {
   const [showEdit, setShowEdit] = useState(false);
 

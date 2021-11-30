@@ -16,7 +16,7 @@ function InitialPage() {
 
   useEffect(() => {
     api.get("/getAll").then((response) => {
-      setEntry(response.data);
+      setEntry(response.data.reverse());
     });
     api.get("/sum").then((response) => {
       setPriceSum(response.data.total);
@@ -28,7 +28,7 @@ function InitialPage() {
 
   const getList = () => {
     api.get("/getAll").then((response) => {
-      setEntry(response.data);
+      setEntry(response.data.reverse());
     });
     api.get("/sum").then((response) => {
       setPriceSum(response.data.total);
@@ -68,35 +68,6 @@ function InitialPage() {
       </div>
 
       <Table entry={entry} getList={getList} />
-
-      {/* <form className="form" ref={formRef}>
-        <label>Qual ração você comprou?</label>
-        <input
-          required="required"
-          type="text"
-          onChange={(event) => {
-            setName(event.target.value);
-          }}
-        />
-        <label>Quanto custou??</label>
-        <input
-          required="required"
-          type="number"
-          onChange={(event) => {
-            setPrice(event.target.value);
-          }}
-        />
-        <label>Quant  os quilos?</label>
-        <input
-          required="required"
-          type="number"
-          onChange={(event) => {
-            setWeight(event.target.value);
-          }}
-        />
-        <button onClick={addPurchase}>Submit</button>
-      </form>
-      */}
     </div>
   );
 }
