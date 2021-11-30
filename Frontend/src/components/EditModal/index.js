@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import api from "../../services/api";
 import "./style.css";
 
-function EditModal({ showEdit, setShowEdit, getList, purchase }) {
+function EditModal({ getList, showEdit, purchase, setShowEdit }) {
   const [nameEdit, setNameEdit] = useState("");
   const [priceEdit, setPriceEdit] = useState(0);
   const [weightEdit, setWeightEdit] = useState(0);
@@ -21,51 +21,63 @@ function EditModal({ showEdit, setShowEdit, getList, purchase }) {
         console.log(err);
       });
   };
+
+  useEffect(() => {
+    setNameEdit(purchase.name);
+    setPriceEdit(purchase.price);
+    setWeightEdit(purchase.weight);
+  }, [purchase]);
+
   return (
     <div className={showEdit ? "visible" : "invisible"}>
       <div className="pop-up">
         <label>Nome da ração</label>
         <input
+          maxLength="30"
           placeholder="Nome"
           type="text"
-          defaultValue={purchase.name}
+          value={nameEdit}
           onChange={(event) => {
             setNameEdit(event.target.value);
           }}
         />
         <label>Preço da ração</label>
         <input
+          maxLength="4"
           placeholder="Preço"
           type="number"
-          value={purchase.price}
+          value={priceEdit}
           onChange={(event) => {
             setPriceEdit(event.target.value);
           }}
         />
         <label>Peso da ração</label>
         <input
+          maxLength="30"
           placeholder="Peso"
           type="number"
-          value={purchase.weight}
+          value={weightEdit}
           onChange={(event) => {
             setWeightEdit(event.target.value);
           }}
         />
-        <button
-          onClick={() => {
-            editPurchase(purchase._id);
-            setShowEdit(false);
-          }}
-        >
-          Editar
-        </button>
-        <button
-          onClick={() => {
-            setShowEdit(false);
-          }}
-        >
-          Cancelar
-        </button>
+        <div className="button-box">
+          <button
+            onClick={() => {
+              editPurchase(purchase._id);
+              setShowEdit(false);
+            }}
+          >
+            Editar
+          </button>
+          <button
+            onClick={() => {
+              setShowEdit(false);
+            }}
+          >
+            Cancelar
+          </button>
+        </div>
       </div>
     </div>
   );

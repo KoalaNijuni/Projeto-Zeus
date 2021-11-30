@@ -4,13 +4,9 @@ import api from "../../services/api";
 // import { format } from "date-fns";
 
 import AddModal from "../../components/AddModal/index";
-import EditModal from "../../components/EditModal/index";
 import Table from "../../components/Table/index";
 
 function InitialPage() {
-  const [purchase, setPurchase] = useState({});
-
-  const [showEdit, setShowEdit] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
 
   const [entry, setEntry] = useState([]);
@@ -44,12 +40,6 @@ function InitialPage() {
 
   return (
     <div className="App">
-      <EditModal
-        showEdit={showEdit}
-        setShowEdit={setShowEdit}
-        getList={getList}
-        purchase={purchase}
-      />
       <AddModal showAdd={showAdd} setShowAdd={setShowAdd} getList={getList} />
 
       <div className="header">
@@ -66,22 +56,18 @@ function InitialPage() {
           <p>{weightSum}kg</p>
         </div>
       </div>
+      <div className="add-box">
+        <button
+          className="add-button"
+          onClick={() => {
+            setShowAdd(true);
+          }}
+        >
+          Adicionar compra
+        </button>
+      </div>
 
-      <button
-        className="add-button"
-        onClick={() => {
-          setShowAdd(true);
-        }}
-      >
-        Adicionar compra
-      </button>
-
-      <Table
-        entry={entry}
-        getList={getList}
-        setShowEdit={setShowEdit}
-        setPurchase={setPurchase}
-      />
+      <Table entry={entry} getList={getList} />
 
       {/* <form className="form" ref={formRef}>
         <label>Qual ração você comprou?</label>

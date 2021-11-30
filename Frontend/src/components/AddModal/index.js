@@ -7,9 +7,10 @@ function AddModal({ showAdd, setShowAdd, getList }) {
   const [price, setPrice] = useState(0);
   const [weight, setWeight] = useState(0);
 
-  const formRef = useRef(null);
+  const formRef = useRef();
 
-  const addPurchase = () => {
+  const addPurchase = (e) => {
+    e.preventDefault();
     api
       .post("/create", {
         name: name,
@@ -17,15 +18,20 @@ function AddModal({ showAdd, setShowAdd, getList }) {
         weight: weight,
       })
       .then(() => {
+        setName();
+        setPrice();
+        setWeight();
         getList();
+        formRef.current.reset();
       });
   };
 
   return (
     <div className={showAdd ? "visible" : "invisible"}>
-      <form className="pop-up">
+      <form className="pop-up" ref={formRef}>
         <label>Qual ração você comprou?</label>
         <input
+          maxLength="30"
           required="required"
           type="text"
           onChange={(event) => {
@@ -34,6 +40,7 @@ function AddModal({ showAdd, setShowAdd, getList }) {
         />
         <label>Preço da ração</label>
         <input
+          maxLength="4"
           required="required"
           type="number"
           onChange={(event) => {
@@ -42,27 +49,30 @@ function AddModal({ showAdd, setShowAdd, getList }) {
         />
         <label>Peso da ração</label>
         <input
+          maxLength="30"
           required="required"
           type="number"
           onChange={(event) => {
             setWeight(event.target.value);
           }}
         />
-        <button
-          onClick={() => {
-            addPurchase();
-            setShowAdd(false);
-          }}
-        >
-          Adicionar
-        </button>
-        <button
-          onClick={() => {
-            setShowAdd(false);
-          }}
-        >
-          Cancelar
-        </button>
+        <div className="button-box">
+          <button
+            onClick={(e) => {
+              addPurchase(e);
+              setShowAdd(false);
+            }}
+          >
+            Adicionar
+          </button>
+          <button
+            onClick={() => {
+              setShowAdd(false);
+            }}
+          >
+            Cancelar
+          </button>
+        </div>
       </form>
     </div>
   );
