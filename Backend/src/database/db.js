@@ -1,18 +1,16 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
 
-const ZeusDB = async () => {
+module.exports = () => {
   try {
-    const db = mongoose.connect(process.env.MongoURL, {
+    mongoose.connect(process.env.MongoURL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
     mongoose.connection.on("connected", (_) => {
       console.log("Application connected to the database");
     });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
   }
 };
-
-module.exports = ZeusDB;

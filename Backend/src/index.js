@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(cors());
 const PORT = 3002;
 
-app.all("*", require("./routes/routes"));
+app.all("*", require("./routes/index"));
 
 app.get("/", (req, res) => {
   res.send("hello");
