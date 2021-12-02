@@ -49,6 +49,7 @@ module.exports = {
     }
   },
   sumOfPrice: async (req, res) => {
+    console.log("aaaaa");
     try {
       let total = 0;
       let dbItems = await Purchase.find();
