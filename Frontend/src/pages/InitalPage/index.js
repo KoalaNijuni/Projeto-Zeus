@@ -15,10 +15,10 @@ function InitialPage() {
   const [weightSum, setWeightSum] = useState(0);
 
   useEffect(() => {
-    api.get("/getAll").then((response) => {
+    api.get("/").then((response) => {
       setEntry(response.data.reverse());
     });
-    api.get("/sum").then((response) => {
+    api.get("/priceSum").then((response) => {
       setPriceSum(response.data.total);
     });
     api.get("/weightSum").then((response) => {
@@ -27,10 +27,10 @@ function InitialPage() {
   }, []);
 
   const getList = () => {
-    api.get("/getAll").then((response) => {
+    api.get("/").then((response) => {
       setEntry(response.data.reverse());
     });
-    api.get("/sum").then((response) => {
+    api.get("/priceSum").then((response) => {
       setPriceSum(response.data.total);
     });
     api.get("/weightSum").then((response) => {

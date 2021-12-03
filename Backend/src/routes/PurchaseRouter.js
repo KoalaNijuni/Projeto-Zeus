@@ -1,10 +1,13 @@
 const express = require("express");
 const PurchaseController = require("../controllers/PurchaseController");
+const authMiddleware = require("../middleware/auth");
 
 const router = express.Router();
 
+router.use(authMiddleware);
+
 router.post("/", PurchaseController.createPurchase);
-router.get("/aaa", PurchaseController.getAll);
+router.get("/", PurchaseController.getAll);
 router.get("/priceSum", PurchaseController.sumOfPrice);
 router.get("/weightSum", PurchaseController.sumOfWeight);
 router.get("/:id", PurchaseController.getByID);

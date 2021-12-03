@@ -12,7 +12,7 @@ function AddModal({ showAdd, setShowAdd, getList }) {
   const addPurchase = (e) => {
     e.preventDefault();
     api
-      .post("/create", {
+      .post("/purchase/", {
         name: name,
         price: price,
         weight: weight,

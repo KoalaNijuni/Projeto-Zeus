@@ -49,7 +49,7 @@ function Table({ entry = [], getList }) {
                   <button
                     className="button delete-button"
                     onClick={() => {
-                      api.delete(`/deleteID/${purchase._id}`).then(() => {
+                      api.delete(`/${purchase._id}`).then(() => {
                         getList();
                       });
                     }}

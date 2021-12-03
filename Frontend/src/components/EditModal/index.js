@@ -9,7 +9,7 @@ function EditModal({ getList, showEdit, purchase, setShowEdit }) {
 
   const editPurchase = (idEdit) => {
     api
-      .put(`http://localhost:3002/editByID/${idEdit}`, {
+      .put(`/${idEdit}`, {
         name: nameEdit,
         price: priceEdit,
         weight: weightEdit,

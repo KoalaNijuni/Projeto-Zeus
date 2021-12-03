@@ -4,6 +4,12 @@ const jwt = require("jsonwebtoken");
 
 const authConfig = require("../config/auth.json");
 
+function generateToken(params = {}) {
+  return jwt.sign(params, authConfig.secret, {
+    expiresIn: 86400,
+  });
+}
+
 module.exports = {
   createUser: async (req, res) => {
     const { email } = req.body;
@@ -13,9 +19,11 @@ module.exports = {
       }
       const user = await User.create(req.body);
 
-      // user.password = undefined;
+      user.password = undefined;
 
-      return res.status(201).send(user);
+      return res
+        .status(201)
+        .send({ user, token: generateToken({ id: user._id }) });
     } catch (err) {
       return res.status(400).send({ error: err.message });
     }
@@ -35,10 +43,30 @@ module.exports = {
 
     user.password = undefined;
 
-    const token = jwt.sign({ id: user._id }, authConfig.secret, {
-      expiresIn: 86400,
+    res.send({
+      user,
+      token: generateToken({ id: user._id }),
     });
+  },
+  getUserList: async (req, res) => {
+    try {
+      const list = await User.find();
 
-    res.send({ user, token });
+      return res.status(200).send(list);
+    } catch (err) {
+      return res.status(400).send({ error: err.message });
+    }
+  },
+  deleteUser: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const DeleteUser = await User.findOneAndDelete(id);
+
+      DeleteUser.password = undefined;
+
+      return res.status(200).send(DeleteUser);
+    } catch (err) {
+      return res.status(200).send({ error: err.message });
+    }
   },
 };
