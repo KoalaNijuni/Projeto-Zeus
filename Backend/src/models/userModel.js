@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const PurchaseModel = require("./purchaseModel");
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -19,8 +20,22 @@ const UserSchema = new mongoose.Schema({
   },
   purchases: [
     {
-      type: mongoose.Types.ObjectId,
-      ref: "Purchase",
+      name: {
+        type: String,
+        required: true,
+      },
+      price: {
+        type: Number,
+        required: true,
+      },
+      weight: {
+        type: Number,
+        required: true,
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now,
+      },
     },
   ],
   createdAt: {
@@ -30,6 +45,7 @@ const UserSchema = new mongoose.Schema({
 });
 
 UserSchema.pre("save", async function (next) {
+  if (!this.password) next();
   const hash = await bcrypt.hash(this.password, 10);
   this.password = hash;
 

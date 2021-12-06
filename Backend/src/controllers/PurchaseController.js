@@ -1,19 +1,25 @@
 const Purchase = require("../models/purchaseModel");
+const User = require("../models/userModel");
 
 module.exports = {
   createPurchase: async (req, res) => {
     req.body.price = parseFloat(req.body.price).toFixed(2);
     req.body.weight = parseFloat(req.body.weight).toFixed(2);
     try {
-      const createPurchase = await Purchase.create(req.body);
-      return res.status(201).send(createPurchase);
+      const purchase = req.body;
+
+      const user = await User.findById(req.userId);
+      user.purchases.push(purchase);
+      await user.save();
+      return res.status(200).send(user);
     } catch (err) {
       return res.status(400).send({ error: err.message });
     }
   },
   getAll: async (req, res) => {
     try {
-      const getPurchase = await Purchase.find();
+      const user = await User.findById(req.userId);
+      const getPurchase = user.purchases;
       return res.send(getPurchase);
     } catch (err) {
       return res.status(400).send({ error: err.message });
@@ -22,7 +28,8 @@ module.exports = {
   getByID: async (req, res) => {
     try {
       const { id } = req.params;
-      const getID = await Purchase.findById(id);
+      const user = await User.findById(req.userId);
+      const getID = await user.purchases.findById(id);
       return res.status(200).send(getID);
     } catch (err) {
       return res.status(400).send({ error: err.message });
