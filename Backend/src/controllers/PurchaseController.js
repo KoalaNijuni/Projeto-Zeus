@@ -29,7 +29,12 @@ module.exports = {
     try {
       const { id } = req.params;
       const user = await User.findById(req.userId);
-      const getID = await user.purchases.findById(id);
+      let getID;
+      let checkPurchases = await user.purchases.forEach((purchase) => {
+        if (purchase._id.toString() === id) getID = purchase;
+      });
+      if (!checkPurchases)
+        return res.status(404).json({ error: "Purchase not found." });
       return res.status(200).send(getID);
     } catch (err) {
       return res.status(400).send({ error: err.message });
